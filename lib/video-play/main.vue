@@ -240,7 +240,8 @@ import {
   onMounted,
   useAttrs,
   watch,
-  nextTick
+  nextTick,
+  onBeforeUnmount,
 } from "vue";
 import { debounce } from "throttle-debounce";
 import Hls2 from "hls.js";
@@ -580,6 +581,12 @@ watch(() => props.src, () => {
 onMounted(() => {
   state.dVideo = refdVideo;
   inputFocusHandle();
+});
+onBeforeUnmount(() => {
+  state.dVideo.pause();
+  if (Hls2.isSupported()) {
+    Hls.destroy();
+  }
 });
 defineExpose({
   play: playHandle, //播放
